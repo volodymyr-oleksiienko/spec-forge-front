@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  web:
+    container_name: front
+    image: ghcr.io/volodymyr-oleksiienko/spec-forge-front:${APP_VERSION}
+    restart: always
+    environment:
+      - VIRTUAL_HOST=v-oleksiienko.xyz,www.v-oleksiienko.xyz
+      - VIRTUAL_PORT=80
+      - LETSENCRYPT_HOST=v-oleksiienko.xyz,www.v-oleksiienko.xyz
+    networks:
+      - shared_network
+    healthcheck:
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+networks:
+  shared_network:
+    external: true
