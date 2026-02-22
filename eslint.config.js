@@ -29,6 +29,25 @@ export default defineConfig([
       'simple-import-sort/exports': 'error',
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': ['warn'],
+      '@typescript-eslint/no-explicit-any': 'off',
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: [
+                '@/app/**/!(*.ts|*.tsx)',
+                '@/pages/*/**',
+                '@/widgets/*/**',
+                '@/features/*/**',
+                '@/entities/*/**',
+                '@/shared/*/*/**',
+              ],
+              message: 'Direct deep imports are forbidden. Always use the Public API (index.ts).',
+            },
+          ],
+        },
+      ],
     },
   },
   prettierConfig,
