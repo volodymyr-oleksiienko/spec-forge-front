@@ -108,6 +108,15 @@ src/
 
 ---
 
+## 🔄 CI / CD
+
+- **CI**: GitHub Actions on every push
+- **CD (prod)**: triggered by `v*` git tags or manual run
+- **Image**: `ghcr.io/volodymyr-oleksiienko/spec-forge-front`
+- **Deploy**: Docker Compose on production server
+
+---
+
 ## ⚖️ License
 
 This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**.
@@ -143,3 +152,12 @@ The CI pipeline will fail if these standards are not met.
 - Manual Fix: Run `npm run lint`
 - Automation: Husky and lint-staged format your code automatically on git commit.
 - IDE Setup: Install the ESLint and Prettier plugins and enable "Format on Save."
+
+### 3. Automated Checks
+
+Every Pull Request triggers a CI pipeline to ensure code integrity:
+
+- **Style Enforcement (All Branches):** The build will fail if there are any linting errors or if the TypeScript compiler finds type mismatches.
+- **Verification:**
+  - **Main Branch:** Fast-path verification of the production build.
+  - **Develop Branch:** Full deep-scan including **SonarCloud** static analysis for code smells and maintainability.
