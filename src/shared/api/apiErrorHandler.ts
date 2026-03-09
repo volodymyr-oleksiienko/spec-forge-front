@@ -1,6 +1,6 @@
 import { isRejectedWithValue, type Middleware } from '@reduxjs/toolkit';
 
-import { notifyError } from '@/shared/lib';
+import { notifyError } from '../lib/notify';
 
 export const apiErrorHandler: Middleware = () => (next) => (action) => {
   if (isRejectedWithValue(action)) {
@@ -13,9 +13,8 @@ export const apiErrorHandler: Middleware = () => (next) => (action) => {
       traceId,
     });
 
-    notifyError(
-      'Something went wrong. Please refresh the page and try again. Notify developers if it keeps happening.',
-    );
+    const devMessage = ((action.payload as any)?.data || action.payload)?.devMessage;
+    notifyError(`Something went wrong: ${devMessage ? devMessage : ''}`);
   }
 
   return next(action);

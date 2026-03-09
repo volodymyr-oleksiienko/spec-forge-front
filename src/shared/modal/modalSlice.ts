@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-export type ModalName = '';
+export type ModalName = 'selectSpecType';
 
 interface ModalState {
   modals: Record<string, { data?: any; isModalOpen: boolean }>;
