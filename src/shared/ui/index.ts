@@ -1,3 +1,5 @@
-export { Catcher } from './catcher/Catcher';
-export { Modal } from './Modal/Modal';
-export { NotifyContainer } from './notifier/Notifier';
+export * from './BlinkingDot';
+export * from './Catcher';
+export * from './Collapse';
+export * from './Modal';
+export * from './Notifier';
