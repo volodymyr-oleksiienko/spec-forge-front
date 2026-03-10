@@ -4,12 +4,12 @@ import { useFormContext, useWatch } from 'react-hook-form';
 
 import { buildEmptyRow, renderTypeMetadata, type SpecTable } from '@/entities/spec';
 import { generateHtml } from '@/entities/spec';
+import { generateText } from '@/entities/spec';
 import { Name, Requirement, SelectTypeModal, Type } from '@/features/edit-spec';
 import { SpecRowContextMenu } from '@/features/edit-spec';
 import { useSpecTableMutations } from '@/features/edit-spec';
 import { putDataToClipboard } from '@/shared/lib/clipboard';
 import { notifyError } from '@/shared/lib/notify';
-import { convertHtmlToText } from '@/shared/lib/text';
 import { useModal } from '@/shared/modal';
 
 export const SpecTableWidget = ({ readOnly }: { readOnly: boolean }) => {
@@ -52,9 +52,11 @@ export const SpecTableWidget = ({ readOnly }: { readOnly: boolean }) => {
   const mutations = useSpecTableMutations({ specTable, onCommit });
 
   const onHtmlTableCopy = async () => {
-    const html = generateHtml(specTable);
     try {
-      await putDataToClipboard({ 'text/html': html, 'text/plain': convertHtmlToText(html) });
+      await putDataToClipboard({
+        'text/html': generateHtml(specTable),
+        'text/plain': generateText(specTable),
+      });
     } catch (e: unknown) {
       console.log(e);
       notifyError('Failed to copy table to clipboard');

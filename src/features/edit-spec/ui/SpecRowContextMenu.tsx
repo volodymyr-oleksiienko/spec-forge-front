@@ -125,7 +125,7 @@ export const SpecRowContextMenu = ({
           <ContextMenu.Item className="outline-none" onClick={onCopyTable}>
             <div className="flex items-center gap-2 px-3 py-2 hover:bg-base-200 rounded-lg cursor-pointer">
               <Copy size={16} />
-              <span>Copy Table (HTML)</span>
+              <span>Copy Table</span>
             </div>
           </ContextMenu.Item>
         </ContextMenu.Content>

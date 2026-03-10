@@ -25,9 +25,11 @@ const DiagnosticsConsoleContent = ({ warnings }: { warnings: Warning[] }) => {
         ${isOpen ? 'h-64' : 'h-11'}
       `}
     >
-      <div
-        className="flex items-center justify-between px-5 h-11 cursor-pointer bg-base-200/30 hover:bg-base-200/60 rounded-t-2xl transition-colors"
+      <button
+        type="button"
+        className="w-full border-none outline-none focus-visible:ring-2 focus-visible:ring-primary flex items-center justify-between px-5 h-11 cursor-pointer bg-base-200/30 hover:bg-base-200/60 rounded-t-2xl transition-colors"
         onClick={() => setIsOpen(!isOpen)}
+        aria-expanded={isOpen}
       >
         <div className="flex items-center gap-3">
           <div className="p-1.5 bg-warning/10 rounded-lg">
@@ -56,7 +58,7 @@ const DiagnosticsConsoleContent = ({ warnings }: { warnings: Warning[] }) => {
             {isOpen ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
           </div>
         </div>
-      </div>
+      </button>
 
       <div className={`overflow-y-auto bg-base-100 ${isOpen ? 'h-[200px]' : 'h-0'}`}>
         <div className="p-4 space-y-2">

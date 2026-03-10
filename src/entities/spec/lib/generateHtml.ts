@@ -2,22 +2,22 @@ import { renderTypeMetadata, type SpecTable } from '@/entities/spec';
 
 export const generateHtml = (specTable: SpecTable): string => {
   const maxDepth = specTable.specRows.reduce((max, row) => Math.max(max, row.depth), 0);
+  const propColCount = maxDepth + 1;
 
   const headRow = `<tr>
-            ${`<th>Property</th>`.repeat(maxDepth + 1)}
+            ${`<th>Property</th>`.repeat(propColCount)}
             <th>Type</th>
-            <th>Format</th>
             <th>Required</th>
             <th>Description</th>
         </tr>`;
 
   const bodyRows = specTable.specRows
     .map((row) => {
-      const propertyCells = Array.from({ length: maxDepth }, (_, i) => {
+      const propertyCells = Array.from({ length: propColCount }, (_, i) => {
         return `<td>${i === row.depth ? escapeHtml(row.name) : ''}</td>`;
       }).join('');
 
-      const typeCell = `<td>${row.type.type.toLowerCase()}${escapeHtml(renderTypeMetadata(row.type))}</td>`;
+      const typeCell = `<td>${row.type.type.toLowerCase()} ${escapeHtml(renderTypeMetadata(row.type))}</td>`;
       const reqCell = `<td>${row.required ? 'Yes' : 'No'}</td>`;
       const descCell = `<td>${escapeHtml(row.description || '')}</td>`;
 
