@@ -1,7 +1,9 @@
-import { Editor } from '@monaco-editor/react';
+import { lazy } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import { isValidSpecJson } from '@/shared/lib/json';
+
+const JsonMonacoEditor = lazy(() => import('@/shared/ui/MonacoEditor/JsonMonacoEditor'));
 
 export const JsonEditor = ({
   fieldName,
@@ -26,13 +28,9 @@ export const JsonEditor = ({
   };
 
   return (
-    <Editor
+    <JsonMonacoEditor
       defaultValue={value}
       onChange={handleChange}
-      defaultLanguage="json"
-      theme="github"
-      width="100%"
-      height="70vh"
       options={{
         readOnly,
       }}

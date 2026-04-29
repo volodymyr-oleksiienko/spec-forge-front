@@ -1,5 +1,5 @@
 import { AlertTriangle, Lock, Unlock } from 'lucide-react';
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useCallback, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import type { GenerationConfig } from '@/entities/config';
@@ -25,24 +25,30 @@ const tabs: { title: string; generationSource: GenerationSource }[] = [
 ];
 
 const tabContents: {
-  content: (readOnly: boolean) => ReactNode;
+  getContent: (readOnly: boolean) => ReactNode;
   generationSource: GenerationSource;
 }[] = [
   {
-    content: (readOnly) => <SpecTableWidget readOnly={readOnly} />,
+    getContent: (readOnly) => <SpecTableWidget readOnly={readOnly} />,
     generationSource: 'specTable',
   },
   {
-    content: (readOnly) => <JsonEditor fieldName="jsonSample" readOnly={readOnly} />,
+    getContent: (readOnly) => <JsonEditor fieldName="jsonSample" readOnly={readOnly} />,
     generationSource: 'jsonSample',
   },
   {
-    content: (readOnly) => <JsonEditor fieldName="jsonSchema" readOnly={readOnly} />,
+    getContent: (readOnly) => <JsonEditor fieldName="jsonSchema" readOnly={readOnly} />,
     generationSource: 'jsonSchema',
   },
 ];
 
-export const WorkspaceWidget = ({ isGenerating }: { isGenerating: boolean }) => {
+export const WorkspaceWidget = ({
+  isGenerating,
+  isContentDisabled,
+}: {
+  isGenerating: boolean;
+  isContentDisabled: boolean;
+}) => {
   const [activeTab, setActiveTab] = useState<GenerationSource | 'code'>('specTable');
   const [nextGenerationSource, setNextGenerationSource] = useState<GenerationSource | null>(null);
 
@@ -55,12 +61,15 @@ export const WorkspaceWidget = ({ isGenerating }: { isGenerating: boolean }) => 
   const config = useWatch({ control, name: 'config' });
   const generationSource = useWatch({ control, name: 'generationSource' });
 
-  const handleTabChange = (tabName: GenerationSource | 'code') => {
-    if (isGenerating) {
-      return;
-    }
-    setActiveTab(tabName);
-  };
+  const handleTabChange = useCallback(
+    (tabName: GenerationSource | 'code') => {
+      if (isGenerating) {
+        return;
+      }
+      setActiveTab(tabName);
+    },
+    [isGenerating],
+  );
 
   const confirmSourceChange = () => {
     if (nextGenerationSource) {
@@ -69,6 +78,10 @@ export const WorkspaceWidget = ({ isGenerating }: { isGenerating: boolean }) => 
     }
   };
 
+  if (!config && activeTab === 'code') {
+    handleTabChange('specTable');
+  }
+
   const tooltipText = isGenerating ? 'Generation in progress...' : '';
 
   return (
@@ -76,6 +89,7 @@ export const WorkspaceWidget = ({ isGenerating }: { isGenerating: boolean }) => 
       <div className="tabs tabs-boxed rounded-none bg-base-300/50 p-2 shrink-0">
         {tabs.map((tab) => (
           <button
+            key={tab.generationSource}
             title={tooltipText}
             className={`tab flex-1 font-medium transition-all flex items-center justify-center gap-2 
             ${activeTab === tab.generationSource ? 'tab-active' : ''} 
@@ -109,13 +123,16 @@ export const WorkspaceWidget = ({ isGenerating }: { isGenerating: boolean }) => 
         {tabContents
           .filter((t) => t.generationSource === activeTab)
           .map((t) => (
-            <div className="animate-in fade-in duration-300 h-full relative">
+            <div
+              key={t.generationSource}
+              className="animate-in fade-in duration-300 h-full relative"
+            >
               <UnlockBanner
                 currentSource={generationSource}
                 targetSource={t.generationSource}
                 onUnlock={setNextGenerationSource}
               />
-              {t.content(t.generationSource !== generationSource)}
+              {t.getContent(t.generationSource !== generationSource || isContentDisabled)}
             </div>
           ))}
 
