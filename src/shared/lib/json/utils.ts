@@ -1,7 +1,7 @@
 export const formatJson = (value: string) => {
   try {
     return JSON.stringify(JSON.parse(value), null, 2);
-  } catch (_: unknown) {
+  } catch {
     return value;
   }
 };
@@ -16,7 +16,7 @@ export const isValidSpecJson = (data?: string): boolean => {
       return false;
     }
     return isValidSpecJsonElement(parsed);
-  } catch (_: unknown) {
+  } catch {
     return false;
   }
 };
